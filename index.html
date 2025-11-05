@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="es" data-bs-theme="dark">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ENDO - RIFA • Rifa solidaria</title>
+  <!-- Bootstrap 5.3.8 (nativo) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  <!-- Supabase (solo lectura para marcar vendidos) -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    #grid-scroll {
+      max-height: 70vh;
+      /* altura visible (ajustá según te guste) */
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+  </style>
+
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom sticky-top">
+    <div class="container-xl">
+      <a class="navbar-brand" href="#">💛</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent"
+        aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="#numeros">Números</a></li>
+          <li class="nav-item"><a class="nav-link" href="#como-funciona" data-bs-toggle="modal"
+              data-bs-target="#modalInfo" id="btnOpenInfo">¿Cómo funciona?</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal"
+              data-bs-target="#modalPremios">Premios</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2 mt-1">
+          <button type="button" class="btn btn-outline-success position-relative">
+            $5000
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">♥
+              <span class="visually-hidden">amor</span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero profesional (solo texto actualizado) -->
+  <section class="py-5 bg-body-secondary">
+    <div class="container-xl">
+      <div class="row align-items-center g-4">
+        <div class="col-12 col-lg-7">
+          <h1 class="display-5 fw-semibold">Rifa Solidaria</h1>
+          <p class="lead mb-4">
+            Hola, soy <strong>Ailín</strong> <span aria-hidden="true">💛</span>. Después de 2 años de visitas al médico,
+            hace 8 meses me diagnosticaron
+            <strong>endometriosis intestinal</strong>. Para mejorar mi calidad de vida necesito un tratamiento de alto
+            costo.
+            <strong>¿Me ayudás comprando un número?</strong>.
+          </p>
+          <div class="d-flex flex-wrap gap-2">
+            <div class="d-flex flex-wrap align-items-center gap-2">
+              <span class="badge text-bg-info">Sorteo: 14/11 · Lotería Nacional Nocturna</span>
+              <span class="badge text-bg-success">Valor: $5.000</span>
+              <span class="badge text-bg-secondary">Pago por transferencia o QR</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-5">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-title mb-3">Resumen rápido</h6>
+              <div class="row g-2 text-secondary">
+                <div class="col-6">
+                  <div class="border rounded p-3 h-100">
+                    <div class="small">Seleccionados</div>
+                    <div class="fs-4 fw-semibold" id="heroCount">0</div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="border rounded p-3 h-100">
+                    <div class="small">Total estimado</div>
+                    <div class="fs-4 fw-semibold" id="heroTotal">$0</div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <button id="btnBuyHero" class="btn btn-success" disabled>Comprar selección</button>
+                <button id="btnClearHero" class="btn btn-outline-secondary" disabled>Limpiar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container-xl my-5" id="numeros">
+    <div class="row g-4">
+      <!-- Columna principal -->
+      <div class="col-12 col-lg-9">
+        <div class="d-flex align-items-center gap-2 mb-2 small text-secondary">
+          <span class="badge text-bg-secondary">Disponible</span>
+          <span class="badge text-bg-success">Seleccionado</span>
+          <span class="badge text-bg-dark border">Vendido</span>
+        </div>
+        <!-- Grilla responsive nativa de Bootstrap -->
+        <div id="grid-scroll">
+          <div id="grid" class="row row-cols-3 row-cols-sm-4 row-cols-md-6 row-cols-lg-8 row-cols-xl-10 g-2"></div>
+        </div>
+      </div>
+
+      <!-- Sidebar selección (desktop) -->
+      <div class="col-12 col-lg-3">
+        <div class="card position-sticky" style="top:80px;">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">Tu selección</h6>
+              <small class="text-secondary"><span id="count">0</span> números</small>
+            </div>
+            <div id="selList" class="d-flex flex-wrap gap-2" style="max-height:220px; overflow:auto;"></div>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-secondary">Total</span>
+              <strong id="total">$0</strong>
+            </div>
+            <div class="row g-2">
+              <div class="col-6"><button id="btnClear" class="btn btn-outline-secondary w-100">Limpiar</button></div>
+              <div class="col-6"><button id="btnBuy" class="btn btn-outline-success w-100" disabled>Comprar</button>
+              </div>
+            </div>
+            <div class="mt-2 small text-secondary">Seleccioná en la grilla y comprá todo junto.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Barra fija móvil nativa -->
+  <nav class="navbar fixed-bottom bg-body-tertiary border-top d-lg-none">
+    <div class="container-xl">
+      <div class="d-flex align-items-center w-100 gap-2">
+        <div class="flex-grow-1 overflow-auto" id="selListMobile" style="white-space:nowrap;"></div>
+        <div class="text-end">
+          <div class="small text-secondary"><span id="count2">0</span> sel.</div>
+          <div id="total2" class="fw-semibold">$0</div>
+        </div>
+        <button id="btnClear2" class="btn btn-outline-secondary btn-sm ms-2">Limpiar</button>
+        <button id="btnBuy2" class="btn btn-primary btn-sm ms-2" disabled>Comprar</button>
+      </div>
+    </div>
+  </nav>
+
+<!-- Modal compra (ordenado y limpio) -->
+<div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar compra</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Datos del comprador -->
+        <form id="buyerForm" novalidate class="mb-3">
+          <div class="row g-3 align-items-end">
+            <div class="col-sm-6">
+              <label class="form-label small text-secondary">Nombre y apellido</label>
+              <input id="buyerName" class="form-control" minlength="3" required placeholder="Ej: Juan Pérez" />
+              <div class="invalid-feedback">Ingresá tu nombre (mín. 3 caracteres).</div>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label small text-secondary">Teléfono (opcional)</label>
+              <input id="buyerPhone" class="form-control" pattern="^[0-9+()\\s-]{6,}$" placeholder="Ej: 11 5555 5555" />
+              <div class="invalid-feedback">Formato no válido (solo dígitos, +, (), -).</div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Números elegidos -->
+        <div class="mb-3">
+          <div class="small text-secondary">Números elegidos</div>
+          <div id="modalNumbers" class="mt-1 d-flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Card transferencia -->
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="text-uppercase small text-secondary mb-2">Transferencia bancaria</div>
+            <div class="row g-3 align-items-end">
+              <div class="col-md-6">
+                <div class="fw-semibold">Alias</div>
+                <div class="font-monospace" id="aliasValue">MARTA.NOEMI.GOMEZ</div>
+                <button type="button" data-copy="#aliasValue" class="btn btn-sm btn-outline-secondary mt-1">Copiar alias</button>
+              </div>
+              <div class="col-md-6">
+                <div class="fw-semibold">CBU</div>
+                <div class="font-monospace" id="cbuValue">0000000000000000000000</div>
+                <button type="button" data-copy="#cbuValue" class="btn btn-sm btn-outline-secondary mt-1">Copiar CBU</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total -->
+        <div class="d-flex justify-content-between align-items-center mb-3 border-top pt-3">
+          <div class="small text-secondary">Total a pagar</div>
+          <div id="modalTotal" class="fs-4 fw-semibold"></div>
+        </div>
+
+        <!-- Alerta -->
+        <div class="alert alert-info" role="alert">
+          <strong>Importante:</strong> este sitio no reserva números. Se marcan como vendidos cuando el organizador
+          verifica el pago.
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Seguir eligiendo</button>
+        <a id="btnWhatsApp" href="#" target="_blank" rel="noopener" class="btn btn-success">
+          <i class="bi bi-whatsapp"></i> Enviar por WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Modal info (SIN CAMBIOS FUNCIONALES) -->
+  <div class="modal fade" id="modalInfo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Cómo funciona</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ol>
+            <li>Elegís los números que quieras.</li>
+            <li>Tocás <strong>Comprar</strong>.</li>
+            <li>Pagás por transferencia.</li>
+            <li>Tocás <strong>Enviar por WhatsApp</strong>.</li>
+          </ol>
+          <p>Luego el organizador marca como vendidos.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Entendido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Premios -->
+  <div class="modal fade" id="modalPremios" tabindex="-1" aria-labelledby="premiosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="premiosLabel">🏆 Premios de la rifa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <ol class="mb-3">
+            <li>1º Cafetera de filtro eléctrica Suono, 1.2L.</li>
+            <li>2º Pava eléctrica Philco, 1.8L – inoxidable.</li>
+            <li>3º Perfume Meu Primeiro Humor Femenino 75ml, Natura.</li>
+          </ol>
+          <p><strong>Se sortea el 14/11 — Lotería Nacional Nocturna.</strong></p>
+          <p class="small text-secondary mb-0">Alias para transferencias: <strong>MARTA.NOEMI.GOMEZ</strong></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-body-tertiary border-top mt-5 py-4">
+    <div class="container text-center">
+      <h6 class="fw-semibold mb-2">💛 ENDO · RIFA SOLIDARIA 💛</h6>
+      <p class="small text-secondary mb-3">
+        🙏 Gracias por colaborar con el tratamiento de Ailín 🙏<br>
+        Valor por número: <strong>$5000</strong> — Sorteo: <strong>14/11 · Lotería Nacional Nocturna</strong>
+      </p>
+      <div class="d-flex justify-content-center gap-3 mb-3">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#modalInfo" class="btn btn-outline-info btn-sm">
+          <i class="bi bi-info-circle"></i> ¿Cómo funciona?
+        </a>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#modalPremios" class="btn btn-outline-warning btn-sm">
+          <i class="bi bi-trophy"></i> Premios
+        </a>
+      </div>
+      <p class="small text-secondary mb-0">
+        ʜᴇᴄʜᴏ ᴄᴏɴ 💛 ᴘᴏʀ ʜᴀᴄʜᴇ
+      </p>
+    </div>
+  </footer>
+
+
+  <!-- === TU JS ORIGINAL ABAJO (SIN CAMBIOS) === -->
+  <script>
+    // ========= CONFIGURACIÓN =========
+const PRICE = 5000; // precio por número
+const FAMILY_WHATSAPP_E164 = '5491124650012'; // ejemplo: 54911... sin '+'
+const CBU = '0000000000000000000000';
+const ALIAS = 'MARTA.NOEMI.GOMEZ';
+// Supabase (solo lectura)
+const SUPABASE_URL = 'https://jvnubihwjesqfxgdasva.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2bnViaWh3amVzcWZ4Z2Rhc3ZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzNDU3NDMsImV4cCI6MjA3NzkyMTc0M30.HTP-hPdfvNxPpQIjTgfhbkHs6VvUSU8liDI9LJz1MwE';
+// ==================================
+
+const grid = document.getElementById('grid');
+const countEl = document.getElementById('count');
+const totalEl = document.getElementById('total');
+const btnBuy = document.getElementById('btnBuy');
+const btnClear = document.getElementById('btnClear');
+const modalEl = document.getElementById('modal');
+const modal = new bootstrap.Modal(modalEl);
+const modalNumbers = document.getElementById('modalNumbers');
+const modalTotal = document.getElementById('modalTotal');
+const buyerName = document.getElementById('buyerName');
+const buyerPhone = document.getElementById('buyerPhone');
+const btnWhatsApp = document.getElementById('btnWhatsApp');
+const cbuValue = document.getElementById('cbuValue');
+const aliasValue = document.getElementById('aliasValue');
+const btnOpenInfo = document.getElementById('btnOpenInfo');
+const modalInfoEl = document.getElementById('modalInfo');
+const modalInfo = new bootstrap.Modal(modalInfoEl);
+const buyerForm = document.getElementById('buyerForm');
+
+// Hero mirrors
+const heroCount = document.getElementById('heroCount');
+const heroTotal = document.getElementById('heroTotal');
+const btnBuyHero = document.getElementById('btnBuyHero');
+const btnClearHero = document.getElementById('btnClearHero');
+
+// Mobile mirrors
+const countEl2 = document.getElementById('count2');
+const totalEl2 = document.getElementById('total2');
+const btnBuy2 = document.getElementById('btnBuy2');
+const btnClear2 = document.getElementById('btnClear2');
+const selList = document.getElementById('selList');
+const selListMobile = document.getElementById('selListMobile');
+
+cbuValue.textContent = CBU; aliasValue.textContent = ALIAS;
+
+// Supabase client (read-only)
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Estado en memoria
+const selected = new Set();
+
+const formatNumber = (n) => n.toString().padStart(3, '0');
+const chip = (n) => `<span class="badge text-bg-success">#${formatNumber(n)}</span>`;
+
+function makeButton(n) {
+  return `
+    <div class="col">
+      <button type="button" class="btn btn-outline-secondary w-100" data-n="${n}">
+        <span class="font-monospace">#${formatNumber(n)}</span>
+      </button>
+    </div>`;
+}
+
+// Render inicial 1..500
+let gridHtml = '';
+for (let i = 1; i <= 500; i++) gridHtml += makeButton(i);
+grid.innerHTML = gridHtml;
+
+// Traer estado (vendidos) desde Supabase
+async function refreshFromServer() {
+  const { data, error } = await supabaseClient
+    .from('tickets')
+    .select('id,status')
+    .order('id', { ascending: true });
+  if (error) { console.error(error); return; }
+  for (const row of data) {
+    const btn = grid.querySelector(`button[data-n="${row.id}"]`);
+    if (!btn) continue;
+    const sold = row.status && row.status !== 'available';
+    btn.disabled = sold;
+    btn.classList.toggle('btn-outline-secondary', !sold);
+    btn.classList.toggle('btn-secondary', sold);
+  }
+  selected.clear();
+  updateSummary();
+}
+
+// Interacción grilla
+grid.addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-n]');
+  if (!btn) return;
+  if (btn.disabled) return;
+  const n = Number(btn.dataset.n);
+  const isSelected = selected.has(n);
+  if (isSelected) {
+    selected.delete(n);
+    btn.classList.remove('active', 'btn-success');
+    btn.classList.add('btn-outline-secondary');
+  } else {
+    selected.add(n);
+    btn.classList.remove('btn-outline-secondary');
+    btn.classList.add('btn-success', 'active');
+  }
+  updateSummary();
+});
+
+function paintSelection() {
+  const arr = [...selected].sort((a, b) => a - b);
+  selList.innerHTML = arr.map(chip).join('');
+  selListMobile.innerHTML = arr.map(chip).join('');
+}
+
+function mirrorSummary(qty, total) {
+  heroCount.textContent = qty; heroTotal.textContent = total;
+  btnBuyHero.disabled = qty === 0; btnClearHero.disabled = qty === 0;
+}
+
+function updateSummary() {
+  const qty = selected.size;
+  const total = (qty * PRICE).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+  countEl.textContent = qty; countEl2.textContent = qty;
+  totalEl.textContent = total; totalEl2.textContent = total;
+  btnBuy.disabled = qty === 0; btnBuy2.disabled = qty === 0;
+  paintSelection();
+  mirrorSummary(qty, total);
+}
+
+function clearSelection() {
+  for (const n of [...selected]) {
+    selected.delete(n);
+    const btn = grid.querySelector(`button[data-n="${n}"]`);
+    if (btn) {
+      btn.classList.remove('active', 'btn-success');
+      btn.classList.add('btn-outline-secondary');
+    }
+  }
+  updateSummary();
+}
+
+btnClear.addEventListener('click', clearSelection);
+btnClear2.addEventListener('click', clearSelection);
+btnClearHero.addEventListener('click', clearSelection);
+
+// Abrir modal
+function openModal() {
+  const arr = [...selected].sort((a, b) => a - b);
+  const total = (arr.length * PRICE).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+  modalNumbers.innerHTML = arr.map(chip).join('');
+  modalTotal.textContent = total;
+  updateWhatsAppLink(arr);
+  buyerForm.classList.remove('was-validated');
+  modal.show();
+}
+
+btnBuy.addEventListener('click', openModal);
+btnBuy2.addEventListener('click', openModal);
+btnBuyHero.addEventListener('click', openModal);
+
+function updateWhatsAppLink(arr) {
+  const name = buyerName.value?.trim() || '';
+  const phoneTxt = buyerPhone.value?.trim() || '';
+  const total = (arr.length * PRICE).toLocaleString('es-AR');
+  const details = `Números: ${arr.map(n => `#${formatNumber(n)}`).join(', ')}
+Cantidad: ${arr.length}
+Total: ${total}`;
+  const intro = `Hola! Te escribo por la rifa solidaria.
+Nombre: ${name || 'N/A'}${phoneTxt ? `
+Teléfono: ${phoneTxt}` : ''}`;
+  const msg = encodeURIComponent(`${intro}
+
+${details}`);
+  btnWhatsApp.href = `https://wa.me/${FAMILY_WHATSAPP_E164}?text=${msg}`;
+}
+
+// Validar antes de WhatsApp
+btnWhatsApp.addEventListener('click', (e) => {
+  e.preventDefault();
+  if (selected.size === 0) { alert('Seleccioná al menos un número.'); return; }
+  if (!buyerForm.checkValidity()) { buyerForm.classList.add('was-validated'); return; }
+  updateWhatsAppLink([...selected].sort((a, b) => a - b));
+  modal.hide();
+  window.open(btnWhatsApp.href, '_blank');
+});
+
+// Copiar CBU/Alias
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-copy]');
+  if (!btn) return;
+  const sel = btn.getAttribute('data-copy');
+  const el = document.querySelector(sel);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+    const old = btn.textContent; btn.textContent = '¡Copiado!'; setTimeout(() => btn.textContent = old, 1200);
+  });
+});
+
+// Info modal
+btnOpenInfo.addEventListener('click', () => modalInfo.show());
+
+// Cargar vendidos al iniciar
+refreshFromServer();
+
+// ====== Realtime: reflejar cambios en vivo ======
+function applyTicketStatus(id, status) {
+  const btn = document.querySelector(`button[data-n="${id}"]`);
+  if (!btn) return;
+  const sold = status && status !== 'available';
+  if (sold && selected.has(id)) selected.delete(id);
+  btn.disabled = sold;
+  btn.classList.toggle('btn-secondary', sold);
+  btn.classList.toggle('btn-outline-secondary', !sold);
+  btn.classList.remove('btn-success', 'active');
+  updateSummary();
+}
+
+const channel = supabaseClient
+  .channel('tickets-realtime')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, (payload) => {
+    const row = payload.new || payload.old;
+    if (!row) return;
+    applyTicketStatus(row.id, row.status);
+  })
+  .subscribe();
+
+  </script>
+</body>
+
+</html>

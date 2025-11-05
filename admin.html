@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="es" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel Admin — Rifa</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    .vh-70 { height: 70vh; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+<body>
+  <nav class="navbar bg-body-tertiary border-bottom">
+    <div class="container-xl">
+      <span class="navbar-brand">Panel Admin — Rifa</span>
+      <span id="whoami" class="small text-secondary"></span>
+    </div>
+  </nav>
+
+  <main class="container-xl my-4">
+    <!-- AUTH VIEW -->
+    <div id="authView" class="row justify-content-center">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title mb-3">Ingresá</h5>
+
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input id="email" type="email" class="form-control" placeholder="tu@correo.com" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Contraseña</label>
+              <input id="password" type="password" class="form-control" placeholder="******" required>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button id="btnLogin" class="btn btn-primary">Entrar</button>
+            </div>
+            <div id="authMsg" class="small mt-3"></div>
+
+            <hr>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APP VIEW -->
+    <div id="appView" class="d-none">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-6">
+          <label class="form-label">Números (coma o rango, ej: 1,2,10-15)</label>
+          <input id="nums" class="form-control" placeholder="1,2,3,10-15">
+          <div class="form-text">Rango válido: 1 a 500</div>
+        </div>
+        <div class="col-md-6 d-flex gap-2">
+          <button id="markSold" class="btn btn-success">Marcar VENDIDO</button>
+          <button id="markAvail" class="btn btn-outline-secondary">Marcar DISPONIBLE</button>
+          <button id="btnRefresh" class="btn btn-outline-info ms-auto">Refrescar listas</button>
+          <button id="btnLogout" class="btn btn-outline-danger">Salir</button>
+        </div>
+      </div>
+
+      <div id="appMsg" class="alert d-none mt-3" role="alert"></div>
+
+      <div class="row mt-3 g-3">
+        <div class="col-lg-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h6 class="card-title">Vendidos</h6>
+              <div id="soldList" class="mono small vh-70 overflow-auto border rounded p-2 bg-body-tertiary"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h6 class="card-title">Disponibles</h6>
+              <div id="availList" class="mono small vh-70 overflow-auto border rounded p-2 bg-body-tertiary"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ============ CONFIG SUPABASE (FIJOS) ============
+    const SUPABASE_URL  = 'https://jvnubihwjesqfxgdasva.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2bnViaWh3amVzcWZ4Z2Rhc3ZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzNDU3NDMsImV4cCI6MjA3NzkyMTc0M30.HTP-hPdfvNxPpQIjTgfhbkHs6VvUSU8liDI9LJz1MwE';
+    const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // ============ ELEMENTOS ============
+    const authView   = document.getElementById('authView');
+    const appView    = document.getElementById('appView');
+    const whoami     = document.getElementById('whoami');
+
+    const email      = document.getElementById('email');
+    const password   = document.getElementById('password');
+    const btnLogin   = document.getElementById('btnLogin');
+    const btnLogout  = document.getElementById('btnLogout');
+
+    const soldList   = document.getElementById('soldList');
+    const availList  = document.getElementById('availList');
+    const nums       = document.getElementById('nums');
+    const markSold   = document.getElementById('markSold');
+    const markAvail  = document.getElementById('markAvail');
+    const btnRefresh = document.getElementById('btnRefresh');
+
+    const authMsg    = document.getElementById('authMsg');
+    const appMsg     = document.getElementById('appMsg');
+
+    // ============ HELPERS UI ============
+    function showAuth() {
+      authView.classList.remove('d-none');
+      appView.classList.add('d-none');
+      whoami.textContent = '';
+      clearFlash();
+    }
+
+    function showApp(user) {
+      authView.classList.add('d-none');
+      appView.classList.remove('d-none');
+      whoami.textContent = user?.email || '';
+    }
+
+    function flash(kind, text) {
+      appMsg.className = `alert alert-${kind} mt-3`;
+      appMsg.textContent = text;
+      appMsg.classList.remove('d-none');
+    }
+
+    function clearFlash() {
+      appMsg.classList.add('d-none');
+      appMsg.textContent = '';
+      appMsg.className = 'alert d-none mt-3';
+    }
+
+    function chunk(arr, size=25) {
+      const out = [];
+      for (let i=0;i<arr.length;i+=size) out.push(arr.slice(i,i+size));
+      return out;
+    }
+
+    function parseNumbers(s) {
+      const out = new Set();
+      (s || '').split(',').map(x => x.trim()).filter(Boolean).forEach(part => {
+        if (part.includes('-')) {
+          const [a,b] = part.split('-').map(n => parseInt(n,10));
+          if (Number.isInteger(a) && Number.isInteger(b)) {
+            const [start, end] = a <= b ? [a,b] : [b,a];
+            for (let i=start; i<=end; i++) if (i>=1 && i<=500) out.add(i);
+          }
+        } else {
+          const n = parseInt(part,10);
+          if (Number.isInteger(n) && n>=1 && n<=500) out.add(n);
+        }
+      });
+      return Array.from(out).sort((a,b)=>a-b);
+    }
+
+    // ============ SUPABASE OPS ============
+    async function refreshLists() {
+      clearFlash();
+      const { data, error } = await supa.from('tickets').select('id,status').order('id');
+      if (error) {
+        flash('danger', 'Error SELECT: ' + error.message + ' — Revisá RLS/Policies.');
+        console.error(error);
+        soldList.textContent  = '';
+        availList.textContent = '';
+        return;
+      }
+      const sold = [], avail = [];
+      for (const r of data) (r.status === 'sold' ? sold : avail).push(r.id);
+      soldList.textContent  = chunk(sold).map(a => a.join(', ')).join('\n');
+      availList.textContent = chunk(avail).map(a => a.join(', ')).join('\n');
+    }
+
+    async function updateStatus(ids, status) {
+      clearFlash();
+      if (!ids.length) { flash('warning','No hay números válidos.'); return; }
+      const { error } = await supa.from('tickets').update({ status }).in('id', ids);
+      if (error) {
+        flash('danger', 'Error UPDATE: ' + error.message + ' — ¿Tu UID está habilitado en la policy?');
+        console.error(error);
+        return;
+      }
+      nums.value = '';
+      flash('success', `Actualizado: ${ids.length} número(s) → ${status.toUpperCase()}`);
+      await refreshLists();
+    }
+
+    // ============ EVENTOS ============
+    btnLogin.addEventListener('click', async () => {
+      authMsg.textContent = '';
+      const { data: sign, error } = await supa.auth.signInWithPassword({ email: email.value, password: password.value });
+      if (error) { authMsg.className = 'small text-danger'; authMsg.textContent = error.message; return; }
+      showApp(sign.user);
+      await refreshLists();
+    });
+
+    btnLogout.addEventListener('click', async () => {
+      await supa.auth.signOut();
+      showAuth();
+    });
+
+    btnRefresh.addEventListener('click', refreshLists);
+    markSold.addEventListener('click', async () => {
+      const ids = parseNumbers(nums.value);
+      await updateStatus(ids, 'sold');
+    });
+    markAvail.addEventListener('click', async () => {
+      const ids = parseNumbers(nums.value);
+      await updateStatus(ids, 'available');
+    });
+
+    // Inicio
+    window.addEventListener('load', showAuth);
+  </script>
+</body>
+</html>
