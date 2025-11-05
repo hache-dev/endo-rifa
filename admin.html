@@ -18,7 +18,7 @@
 <body>
   <nav class="navbar bg-body-tertiary border-bottom">
     <div class="container-xl">
-      <span class="navbar-brand">Panel Admin — Rifa</span>
+      <span class="navbar-brand">Panel Admin</span>
       <span id="whoami" class="small text-secondary"></span>
     </div>
   </nav>
@@ -27,9 +27,10 @@
     <!-- AUTH VIEW -->
     <div id="authView" class="row justify-content-center">
       <div class="col-12 col-md-6 col-lg-4">
-        <div class="card">
+        <div class="card shadow">
           <div class="card-body">
             <h5 class="card-title mb-3">Ingresá</h5>
+            <hr>
 
             <div class="mb-3">
               <label class="form-label">Email</label>
@@ -46,7 +47,9 @@
             <div id="authMsg" class="small mt-3"></div>
 
             <hr>
-
+            <div class="text-center">
+            <code>c0de by h4ch3 | powered by supabase.co</code>
+            </div>
           </div>
         </div>
       </div>
@@ -58,7 +61,6 @@
         <div class="col-md-6">
           <label class="form-label">Números (coma o rango, ej: 1,2,10-15)</label>
           <input id="nums" class="form-control" placeholder="1,2,3,10-15">
-          <div class="form-text">Rango válido: 1 a 500</div>
         </div>
         <div class="col-md-6 d-flex gap-2">
           <button id="markSold" class="btn btn-success">Marcar VENDIDO</button>
