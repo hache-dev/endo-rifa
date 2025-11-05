@@ -63,7 +63,7 @@
           <p class="lead mb-4">
             Hola, soy <strong>Ailín</strong> <span aria-hidden="true">💛</span>. Después de 2 años de visitas al médico,
             hace 8 meses me diagnosticaron
-            <strong>endometriosis intestinal</strong>. Para mejorar mi calidad de vida necesito un tratamiento de alto
+            <strong>endometriosis</strong>. Para mejorar mi calidad de vida necesito un tratamiento de alto
             costo.
             <strong>¿Me ayudás comprando un número?</strong>.
           </p>
@@ -71,7 +71,7 @@
             <div class="d-flex flex-wrap align-items-center gap-2">
               <span class="badge text-bg-info">Sorteo: 14/11 · Lotería Nacional Nocturna</span>
               <span class="badge text-bg-success">Valor: $5.000</span>
-              <span class="badge text-bg-secondary">Pago por transferencia o QR</span>
+              <span class="badge text-bg-secondary">Pago por transferencia</span>
             </div>
           </div>
         </div>
@@ -172,6 +172,13 @@
 
         <div class="modal-body">
 
+
+                    <!-- Números elegidos -->
+          <div class="mb-3">
+            <div class="small text-secondary">Números elegidos</div>
+            <div id="modalNumbers" class="mt-1 d-flex flex-wrap gap-2"></div>
+          </div>
+
           <!-- Datos del comprador -->
           <form id="buyerForm" novalidate class="mb-3">
             <div class="row g-3 align-items-end">
@@ -189,11 +196,7 @@
             </div>
           </form>
 
-          <!-- Números elegidos -->
-          <div class="mb-3">
-            <div class="small text-secondary">Números elegidos</div>
-            <div id="modalNumbers" class="mt-1 d-flex flex-wrap gap-2"></div>
-          </div>
+
 
           <!-- Card transferencia -->
           <div class="card mb-3">
@@ -290,26 +293,40 @@
     </div>
   </div>
 
-  <footer class="bg-body-tertiary border-top mt-5 py-4">
-    <div class="container text-center">
-      <h6 class="fw-semibold mb-2">💛 ENDO · RIFA SOLIDARIA 💛</h6>
-      <p class="small text-secondary mb-3">
-        🙏 Gracias por colaborar con el tratamiento de Ailín 🙏<br>
-        Valor por número: <strong>$5000</strong> — Sorteo: <strong>14/11 · Lotería Nacional Nocturna</strong>
-      </p>
-      <div class="d-flex justify-content-center gap-3 mb-3">
-        <a href="#" data-bs-toggle="modal" data-bs-target="#modalInfo" class="btn btn-outline-info btn-sm">
-          <i class="bi bi-info-circle"></i> ¿Cómo funciona?
-        </a>
-        <a href="#" data-bs-toggle="modal" data-bs-target="#modalPremios" class="btn btn-outline-warning btn-sm">
-          <i class="bi bi-trophy"></i> Premios
-        </a>
-      </div>
-      <p class="small text-secondary mb-0">
-        ʜᴇᴄʜᴏ ᴄᴏɴ 💛 ᴘᴏʀ ʜᴀᴄʜᴇ
-      </p>
+<footer class="bg-body-tertiary border-top mt-5 py-4">
+  <div class="container text-center">
+    <h6 class="fw-semibold mb-2">💛 ENDO · RIFA SOLIDARIA 💛</h6>
+
+    <p class="small text-secondary mb-3">
+      🙏 Gracias por colaborar con el tratamiento de Ailín 🙏<br>
+      Valor por número: <strong>$5000</strong> — Sorteo: <strong>14/11 · Lotería Nacional Nocturna</strong>
+    </p>
+
+    <!-- Alias -->
+    <div class="d-flex flex-column align-items-center mb-3">
+      <div class="fw-semibold text-secondary mb-1">Alias para transferir</div>
+      <div class="font-monospace" id="aliasValueFooter">MARTA.NOEMI.GOMEZ</div>
+      <button type="button" data-copy="#aliasValueFooter" class="btn btn-sm btn-outline-secondary mt-2">
+        Copiar alias
+      </button>
     </div>
-  </footer>
+
+    <!-- Botones modales -->
+    <div class="d-flex justify-content-center gap-3 mb-3">
+      <a href="#" data-bs-toggle="modal" data-bs-target="#modalInfo" class="btn btn-outline-info btn-sm">
+        <i class="bi bi-info-circle"></i> ¿Cómo funciona?
+      </a>
+      <a href="#" data-bs-toggle="modal" data-bs-target="#modalPremios" class="btn btn-outline-warning btn-sm">
+        <i class="bi bi-trophy"></i> Premios
+      </a>
+    </div>
+
+    <p class="small text-secondary mb-0">
+      ʜᴇᴄʜᴏ ᴄᴏɴ 💛 ᴘᴏʀ ʜᴀᴄʜᴇ
+    </p>
+  </div>
+</footer>
+
 
 
   <!-- === TU JS ORIGINAL ABAJO (SIN CAMBIOS) === -->
