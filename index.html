@@ -161,77 +161,85 @@
     </div>
   </nav>
 
-<!-- Modal compra (ordenado y limpio) -->
-<div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Confirmar compra</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-
-      <div class="modal-body">
-
-        <!-- Datos del comprador -->
-        <form id="buyerForm" novalidate class="mb-3">
-          <div class="row g-3 align-items-end">
-            <div class="col-sm-6">
-              <label class="form-label small text-secondary">Nombre y apellido</label>
-              <input id="buyerName" class="form-control" minlength="3" required placeholder="Ej: Juan Pérez" />
-              <div class="invalid-feedback">Ingresá tu nombre (mín. 3 caracteres).</div>
-            </div>
-            <div class="col-sm-6">
-              <label class="form-label small text-secondary">Teléfono (opcional)</label>
-              <input id="buyerPhone" class="form-control" pattern="^[0-9+()\\s-]{6,}$" placeholder="Ej: 11 5555 5555" />
-              <div class="invalid-feedback">Formato no válido (solo dígitos, +, (), -).</div>
-            </div>
-          </div>
-        </form>
-
-        <!-- Números elegidos -->
-        <div class="mb-3">
-          <div class="small text-secondary">Números elegidos</div>
-          <div id="modalNumbers" class="mt-1 d-flex flex-wrap gap-2"></div>
+  <!-- Modal compra (ordenado y limpio) -->
+  <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmar compra</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
-        <!-- Card transferencia -->
-        <div class="card mb-3">
-          <div class="card-body">
-            <div class="text-uppercase small text-secondary mb-2">Transferencia bancaria</div>
+        <div class="modal-body">
+
+          <!-- Datos del comprador -->
+          <form id="buyerForm" novalidate class="mb-3">
             <div class="row g-3 align-items-end">
-              <div class="col-md-6">
-                <div class="fw-semibold">Alias</div>
-                <div class="font-monospace" id="aliasValue">MARTA.NOEMI.GOMEZ</div>
-                <button type="button" data-copy="#aliasValue" class="btn btn-sm btn-outline-secondary mt-1">Copiar alias</button>
+              <div class="col-sm-6">
+                <label class="form-label small text-secondary">Nombre y apellido</label>
+                <input id="buyerName" class="form-control" minlength="3" required placeholder="Ej: Juan Pérez" />
+                <div class="invalid-feedback">Ingresá tu nombre (mín. 3 caracteres).</div>
               </div>
+              <div class="col-sm-6">
+                <label class="form-label small text-secondary">Teléfono (opcional)</label>
+                <input id="buyerPhone" class="form-control" pattern="^[0-9+()\\s-]{6,}$"
+                  placeholder="Ej: 11 5555 5555" />
+                <div class="invalid-feedback">Formato no válido (solo dígitos, +, (), -).</div>
+              </div>
+            </div>
+          </form>
 
+          <!-- Números elegidos -->
+          <div class="mb-3">
+            <div class="small text-secondary">Números elegidos</div>
+            <div id="modalNumbers" class="mt-1 d-flex flex-wrap gap-2"></div>
+          </div>
+
+          <!-- Card transferencia -->
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="text-uppercase small text-secondary mb-2">Transferencia bancaria</div>
+              <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                  <div class="fw-semibold">Alias</div>
+                  <div class="font-monospace" id="aliasValue">MARTA.NOEMI.GOMEZ</div>
+                  <button type="button" data-copy="#aliasValue" class="btn btn-sm btn-outline-secondary mt-1">Copiar
+                    alias</button>
+                </div>
+                <div class="col-md-6 d-none">
+                  <div class="fw-semibold">CBU</div>
+                  <div class="font-monospace" id="cbuValue">0000000000000000000000</div>
+                  <button type="button" data-copy="#cbuValue" class="btn btn-sm btn-outline-secondary mt-1">Copiar
+                    CBU</button>
+                </div>
+
+              </div>
             </div>
           </div>
+
+          <!-- Total -->
+          <div class="d-flex justify-content-between align-items-center mb-3 border-top pt-3">
+            <div class="small text-secondary">Total a pagar</div>
+            <div id="modalTotal" class="fs-4 fw-semibold"></div>
+          </div>
+
+          <!-- Alerta -->
+          <div class="alert alert-info" role="alert">
+            <strong>Importante:</strong> este sitio no reserva números. Se marcan como vendidos cuando el organizador
+            verifica el pago.
+          </div>
+
         </div>
 
-        <!-- Total -->
-        <div class="d-flex justify-content-between align-items-center mb-3 border-top pt-3">
-          <div class="small text-secondary">Total a pagar</div>
-          <div id="modalTotal" class="fs-4 fw-semibold"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Seguir eligiendo</button>
+          <a id="btnWhatsApp" href="#" target="_blank" rel="noopener" class="btn btn-success">
+            <i class="bi bi-whatsapp"></i> Enviar por WhatsApp
+          </a>
         </div>
-
-        <!-- Alerta -->
-        <div class="alert alert-info" role="alert">
-          <strong>Importante:</strong> este sitio no reserva números. Se marcan como vendidos cuando el organizador
-          verifica el pago.
-        </div>
-
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Seguir eligiendo</button>
-        <a id="btnWhatsApp" href="#" target="_blank" rel="noopener" class="btn btn-success">
-          <i class="bi bi-whatsapp"></i> Enviar por WhatsApp
-        </a>
       </div>
     </div>
   </div>
-</div>
 
 
   <!-- Modal info (SIN CAMBIOS FUNCIONALES) -->
@@ -307,230 +315,232 @@
   <!-- === TU JS ORIGINAL ABAJO (SIN CAMBIOS) === -->
   <script>
     // ========= CONFIGURACIÓN =========
-const PRICE = 5000; // precio por número
-const FAMILY_WHATSAPP_E164 = '5491124650012'; // ejemplo: 54911... sin '+'
-const CBU = '0000000000000000000000';
-const ALIAS = 'MARTA.NOEMI.GOMEZ';
-// Supabase (solo lectura)
-const SUPABASE_URL = 'https://jvnubihwjesqfxgdasva.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2bnViaWh3amVzcWZ4Z2Rhc3ZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzNDU3NDMsImV4cCI6MjA3NzkyMTc0M30.HTP-hPdfvNxPpQIjTgfhbkHs6VvUSU8liDI9LJz1MwE';
-// ==================================
+    const PRICE = 5000; // precio por número
+    const FAMILY_WHATSAPP_E164 = '5491124650012'; // ejemplo: 54911... sin '+'
+    const CBU = '0000000000000000000000';
+    const ALIAS = 'MARTA.NOEMI.GOMEZ';
+    // Supabase (solo lectura)
+    const SUPABASE_URL = 'https://jvnubihwjesqfxgdasva.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2bnViaWh3amVzcWZ4Z2Rhc3ZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzNDU3NDMsImV4cCI6MjA3NzkyMTc0M30.HTP-hPdfvNxPpQIjTgfhbkHs6VvUSU8liDI9LJz1MwE';
+    // ==================================
 
-const grid = document.getElementById('grid');
-const countEl = document.getElementById('count');
-const totalEl = document.getElementById('total');
-const btnBuy = document.getElementById('btnBuy');
-const btnClear = document.getElementById('btnClear');
-const modalEl = document.getElementById('modal');
-const modal = new bootstrap.Modal(modalEl);
-const modalNumbers = document.getElementById('modalNumbers');
-const modalTotal = document.getElementById('modalTotal');
-const buyerName = document.getElementById('buyerName');
-const buyerPhone = document.getElementById('buyerPhone');
-const btnWhatsApp = document.getElementById('btnWhatsApp');
-const cbuValue = document.getElementById('cbuValue');
-const aliasValue = document.getElementById('aliasValue');
-const btnOpenInfo = document.getElementById('btnOpenInfo');
-const modalInfoEl = document.getElementById('modalInfo');
-const modalInfo = new bootstrap.Modal(modalInfoEl);
-const buyerForm = document.getElementById('buyerForm');
+    const grid = document.getElementById('grid');
+    const countEl = document.getElementById('count');
+    const totalEl = document.getElementById('total');
+    const btnBuy = document.getElementById('btnBuy');
+    const btnClear = document.getElementById('btnClear');
+    const modalEl = document.getElementById('modal');
+    const modal = new bootstrap.Modal(modalEl);
+    const modalNumbers = document.getElementById('modalNumbers');
+    const modalTotal = document.getElementById('modalTotal');
+    const buyerName = document.getElementById('buyerName');
+    const buyerPhone = document.getElementById('buyerPhone');
+    const btnWhatsApp = document.getElementById('btnWhatsApp');
+    const cbuValue = document.getElementById('cbuValue');
+    const aliasValue = document.getElementById('aliasValue');
+    const btnOpenInfo = document.getElementById('btnOpenInfo');
+    const modalInfoEl = document.getElementById('modalInfo');
+    const modalInfo = new bootstrap.Modal(modalInfoEl);
+    const buyerForm = document.getElementById('buyerForm');
 
-// Hero mirrors
-const heroCount = document.getElementById('heroCount');
-const heroTotal = document.getElementById('heroTotal');
-const btnBuyHero = document.getElementById('btnBuyHero');
-const btnClearHero = document.getElementById('btnClearHero');
+    // Hero mirrors
+    const heroCount = document.getElementById('heroCount');
+    const heroTotal = document.getElementById('heroTotal');
+    const btnBuyHero = document.getElementById('btnBuyHero');
+    const btnClearHero = document.getElementById('btnClearHero');
 
-// Mobile mirrors
-const countEl2 = document.getElementById('count2');
-const totalEl2 = document.getElementById('total2');
-const btnBuy2 = document.getElementById('btnBuy2');
-const btnClear2 = document.getElementById('btnClear2');
-const selList = document.getElementById('selList');
-const selListMobile = document.getElementById('selListMobile');
+    // Mobile mirrors
+    const countEl2 = document.getElementById('count2');
+    const totalEl2 = document.getElementById('total2');
+    const btnBuy2 = document.getElementById('btnBuy2');
+    const btnClear2 = document.getElementById('btnClear2');
+    const selList = document.getElementById('selList');
+    const selListMobile = document.getElementById('selListMobile');
 
-cbuValue.textContent = CBU; aliasValue.textContent = ALIAS;
+    cbuValue.textContent = CBU; aliasValue.textContent = ALIAS;
 
-// Supabase client (read-only)
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Supabase client (read-only)
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Estado en memoria
-const selected = new Set();
+    // Estado en memoria
+    const selected = new Set();
 
-const formatNumber = (n) => n.toString().padStart(3, '0');
-const chip = (n) => `<span class="badge text-bg-success">#${formatNumber(n)}</span>`;
+    const formatNumber = (n) => n.toString().padStart(3, '0');
+    const chip = (n) => `<span class="badge text-bg-success">#${formatNumber(n)}</span>`;
 
-function makeButton(n) {
-  return `
-    <div class="col">
-      <button type="button" class="btn btn-outline-secondary w-100" data-n="${n}">
-        <span class="font-monospace">#${formatNumber(n)}</span>
-      </button>
-    </div>`;
-}
-
-// Render inicial 1..500
-let gridHtml = '';
-for (let i = 1; i <= 500; i++) gridHtml += makeButton(i);
-grid.innerHTML = gridHtml;
-
-// Traer estado (vendidos) desde Supabase
-async function refreshFromServer() {
-  const { data, error } = await supabaseClient
-    .from('tickets')
-    .select('id,status')
-    .order('id', { ascending: true });
-  if (error) { console.error(error); return; }
-  for (const row of data) {
-    const btn = grid.querySelector(`button[data-n="${row.id}"]`);
-    if (!btn) continue;
-    const sold = row.status && row.status !== 'available';
-    btn.disabled = sold;
-    btn.classList.toggle('btn-outline-secondary', !sold);
-    btn.classList.toggle('btn-secondary', sold);
-  }
-  selected.clear();
-  updateSummary();
-}
-
-// Interacción grilla
-grid.addEventListener('click', (e) => {
-  const btn = e.target.closest('button[data-n]');
-  if (!btn) return;
-  if (btn.disabled) return;
-  const n = Number(btn.dataset.n);
-  const isSelected = selected.has(n);
-  if (isSelected) {
-    selected.delete(n);
-    btn.classList.remove('active', 'btn-success');
-    btn.classList.add('btn-outline-secondary');
-  } else {
-    selected.add(n);
-    btn.classList.remove('btn-outline-secondary');
-    btn.classList.add('btn-success', 'active');
-  }
-  updateSummary();
-});
-
-function paintSelection() {
-  const arr = [...selected].sort((a, b) => a - b);
-  selList.innerHTML = arr.map(chip).join('');
-  selListMobile.innerHTML = arr.map(chip).join('');
-}
-
-function mirrorSummary(qty, total) {
-  heroCount.textContent = qty; heroTotal.textContent = total;
-  btnBuyHero.disabled = qty === 0; btnClearHero.disabled = qty === 0;
-}
-
-function updateSummary() {
-  const qty = selected.size;
-  const total = (qty * PRICE).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
-  countEl.textContent = qty; countEl2.textContent = qty;
-  totalEl.textContent = total; totalEl2.textContent = total;
-  btnBuy.disabled = qty === 0; btnBuy2.disabled = qty === 0;
-  paintSelection();
-  mirrorSummary(qty, total);
-}
-
-function clearSelection() {
-  for (const n of [...selected]) {
-    selected.delete(n);
-    const btn = grid.querySelector(`button[data-n="${n}"]`);
-    if (btn) {
-      btn.classList.remove('active', 'btn-success');
-      btn.classList.add('btn-outline-secondary');
+    function makeButton(n) {
+      return `
+   <div class="col">
+     <button type="button" class="btn btn-outline-secondary w-100" data-n="${n}">
+       <span class="font-monospace">#${formatNumber(n)}</span>
+     </button>
+   </div>`;
     }
-  }
-  updateSummary();
-}
 
-btnClear.addEventListener('click', clearSelection);
-btnClear2.addEventListener('click', clearSelection);
-btnClearHero.addEventListener('click', clearSelection);
+    // Render inicial 1..500
+    let gridHtml = '';
+    for (let i = 1; i <= 500; i++) gridHtml += makeButton(i);
+    grid.innerHTML = gridHtml;
 
-// Abrir modal
-function openModal() {
-  const arr = [...selected].sort((a, b) => a - b);
-  const total = (arr.length * PRICE).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
-  modalNumbers.innerHTML = arr.map(chip).join('');
-  modalTotal.textContent = total;
-  updateWhatsAppLink(arr);
-  buyerForm.classList.remove('was-validated');
-  modal.show();
-}
+    // Traer estado (vendidos) desde Supabase
+    async function refreshFromServer() {
+      const { data, error } = await supabaseClient
+        .from('tickets')
+        .select('id,status')
+        .order('id', { ascending: true });
+      if (error) { console.error(error); return; }
+      for (const row of data) {
+        const btn = grid.querySelector(`button[data-n="${row.id}"]`);
+        if (!btn) continue;
+        const sold = row.status && row.status !== 'available';
+        btn.disabled = sold;
+        btn.classList.toggle('btn-outline-secondary', !sold);
+        btn.classList.toggle('btn-secondary', sold);
+      }
+      selected.clear();
+      updateSummary();
+    }
 
-btnBuy.addEventListener('click', openModal);
-btnBuy2.addEventListener('click', openModal);
-btnBuyHero.addEventListener('click', openModal);
+    // Interacción grilla
+    grid.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-n]');
+      if (!btn) return;
+      if (btn.disabled) return;
+      const n = Number(btn.dataset.n);
+      const isSelected = selected.has(n);
+      if (isSelected) {
+        selected.delete(n);
+        btn.classList.remove('active', 'btn-success');
+        btn.classList.add('btn-outline-secondary');
+      } else {
+        selected.add(n);
+        btn.classList.remove('btn-outline-secondary');
+        btn.classList.add('btn-success', 'active');
+      }
+      updateSummary();
+    });
 
-function updateWhatsAppLink(arr) {
-  const name = buyerName.value?.trim() || '';
-  const phoneTxt = buyerPhone.value?.trim() || '';
-  const total = (arr.length * PRICE).toLocaleString('es-AR');
-  const details = `Números: ${arr.map(n => `#${formatNumber(n)}`).join(', ')}
+    function paintSelection() {
+      const arr = [...selected].sort((a, b) => a - b);
+      selList.innerHTML = arr.map(chip).join('');
+      selListMobile.innerHTML = arr.map(chip).join('');
+    }
+
+    function mirrorSummary(qty, total) {
+      heroCount.textContent = qty; heroTotal.textContent = total;
+      btnBuyHero.disabled = qty === 0; btnClearHero.disabled = qty === 0;
+    }
+
+    function updateSummary() {
+      const qty = selected.size;
+      const total = (qty * PRICE).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+      countEl.textContent = qty; countEl2.textContent = qty;
+      totalEl.textContent = total; totalEl2.textContent = total;
+      btnBuy.disabled = qty === 0; btnBuy2.disabled = qty === 0;
+      paintSelection();
+      mirrorSummary(qty, total);
+    }
+
+    function clearSelection() {
+      for (const n of [...selected]) {
+        selected.delete(n);
+        const btn = grid.querySelector(`button[data-n="${n}"]`);
+        if (btn) {
+          btn.classList.remove('active', 'btn-success');
+          btn.classList.add('btn-outline-secondary');
+        }
+      }
+      updateSummary();
+    }
+
+    btnClear.addEventListener('click', clearSelection);
+    btnClear2.addEventListener('click', clearSelection);
+    btnClearHero.addEventListener('click', clearSelection);
+
+    // Abrir modal
+    function openModal() {
+      const arr = [...selected].sort((a, b) => a - b);
+      const total = (arr.length * PRICE).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+      modalNumbers.innerHTML = arr.map(chip).join('');
+      modalTotal.textContent = total;
+      updateWhatsAppLink(arr);
+      buyerForm.classList.remove('was-validated');
+      modal.show();
+    }
+
+    btnBuy.addEventListener('click', openModal);
+    btnBuy2.addEventListener('click', openModal);
+    btnBuyHero.addEventListener('click', openModal);
+
+    function updateWhatsAppLink(arr) {
+      const name = buyerName.value?.trim() || '';
+      const phoneTxt = buyerPhone.value?.trim() || '';
+      const total = (arr.length * PRICE).toLocaleString('es-AR');
+      const details = `Números: ${arr.map(n => `#${formatNumber(n)}`).join(', ')}
 Cantidad: ${arr.length}
 Total: ${total}`;
-  const intro = `Hola! Te escribo por la rifa solidaria.
+      const intro = `Hola! Te escribo por la rifa solidaria.
 Nombre: ${name || 'N/A'}${phoneTxt ? `
 Teléfono: ${phoneTxt}` : ''}`;
-  const msg = encodeURIComponent(`${intro}
+      const msg = encodeURIComponent(`${intro}
 
 ${details}`);
-  btnWhatsApp.href = `https://wa.me/${FAMILY_WHATSAPP_E164}?text=${msg}`;
-}
+      btnWhatsApp.href = `https://wa.me/${FAMILY_WHATSAPP_E164}?text=${msg}`;
+    }
 
-// Validar antes de WhatsApp
-btnWhatsApp.addEventListener('click', (e) => {
-  e.preventDefault();
-  if (selected.size === 0) { alert('Seleccioná al menos un número.'); return; }
-  if (!buyerForm.checkValidity()) { buyerForm.classList.add('was-validated'); return; }
-  updateWhatsAppLink([...selected].sort((a, b) => a - b));
-  modal.hide();
-  window.open(btnWhatsApp.href, '_blank');
-});
+    // Validar antes de WhatsApp
+    btnWhatsApp.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (selected.size === 0) { alert('Seleccioná al menos un número.'); return; }
+      if (!buyerForm.checkValidity()) { buyerForm.classList.add('was-validated'); return; }
+      updateWhatsAppLink([...selected].sort((a, b) => a - b));
+      modal.hide();
+      window.open(btnWhatsApp.href, '_blank');
+    });
 
-// Copiar CBU/Alias
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-copy]');
-  if (!btn) return;
-  const sel = btn.getAttribute('data-copy');
-  const el = document.querySelector(sel);
-  if (!el) return;
-  navigator.clipboard.writeText(el.textContent.trim()).then(() => {
-    const old = btn.textContent; btn.textContent = '¡Copiado!'; setTimeout(() => btn.textContent = old, 1200);
-  });
-});
+    // Copiar CBU/Alias
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-copy]');
+      if (!btn) return;
+      const sel = btn.getAttribute('data-copy');
+      const el = document.querySelector(sel);
+      if (!el) return;
+      navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+        const old = btn.textContent; btn.textContent = '¡Copiado!'; setTimeout(() => btn.textContent = old, 1200);
+      });
+    });
 
-// Info modal
-btnOpenInfo.addEventListener('click', () => modalInfo.show());
+    // Info modal
+    btnOpenInfo.addEventListener('click', () => modalInfo.show());
 
-// Cargar vendidos al iniciar
-refreshFromServer();
+    // Cargar vendidos al iniciar
+    refreshFromServer();
 
-// ====== Realtime: reflejar cambios en vivo ======
-function applyTicketStatus(id, status) {
-  const btn = document.querySelector(`button[data-n="${id}"]`);
-  if (!btn) return;
-  const sold = status && status !== 'available';
-  if (sold && selected.has(id)) selected.delete(id);
-  btn.disabled = sold;
-  btn.classList.toggle('btn-secondary', sold);
-  btn.classList.toggle('btn-outline-secondary', !sold);
-  btn.classList.remove('btn-success', 'active');
-  updateSummary();
-}
+    // ====== Realtime: reflejar cambios en vivo ======
+    function applyTicketStatus(id, status) {
+      const btn = document.querySelector(`button[data-n="${id}"]`);
+      if (!btn) return;
+      const sold = status && status !== 'available';
+      if (sold && selected.has(id)) selected.delete(id);
+      btn.disabled = sold;
+      btn.classList.toggle('btn-secondary', sold);
+      btn.classList.toggle('btn-outline-secondary', !sold);
+      btn.classList.remove('btn-success', 'active');
+      updateSummary();
+    }
 
-const channel = supabaseClient
-  .channel('tickets-realtime')
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, (payload) => {
-    const row = payload.new || payload.old;
-    if (!row) return;
-    applyTicketStatus(row.id, row.status);
-  })
-  .subscribe();
+    const channel = supabaseClient
+      .channel('tickets-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, (payload) => {
+        const row = payload.new || payload.old;
+        if (!row) return;
+        applyTicketStatus(row.id, row.status);
+      })
+      .subscribe();
 
   </script>
 </body>
+
+</html>
 
 </html>
